@@ -1,0 +1,3 @@
+Combinig both file text,this is first second text file
+ ,this is second second text file
+ 

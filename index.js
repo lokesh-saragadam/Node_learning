@@ -30,7 +30,7 @@ readFile('./content/first.txt','utf8',(err,result)=>{
 })
 
 let users=[];
-let id=1;
+let id=2;
 
 //create user
 app.post("/users",(req,res)=>{

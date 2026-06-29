@@ -4,6 +4,9 @@
 #Current Public module
 /BackendAPI/public/
 
+#Non neccessary but usefull functions for debugging.
+/BackendAPI/prev_used_func.js
+
 # all data mimicing storage files.
 *.json
 

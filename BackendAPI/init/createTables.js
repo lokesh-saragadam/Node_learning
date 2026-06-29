@@ -16,15 +16,11 @@ async function reset_Database(){
 async function createTables() {
     try {
         await pool.query(`
-            CREATE TABLE IF NOT EXISTS registerusers (
+            CREATE TABLE IF NOT EXISTS users (
                 userid SERIAL PRIMARY KEY,
                 username VARCHAR(100) UNIQUE,
                 password VARCHAR(100),
                 email VARCHAR(100) UNIQUE
-            );
-            CREATE TABLE IF NOT EXISTS users (
-                userid SERIAL PRIMARY KEY,
-                name VARCHAR(100) UNIQUE
             );
 
             CREATE TABLE IF NOT EXISTS platforms (

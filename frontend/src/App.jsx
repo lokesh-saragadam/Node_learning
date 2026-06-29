@@ -5,7 +5,8 @@ import Hero from "./components/Hero.jsx";
 import Stats from "./components/Stats.jsx";
 import Features from "./components/Features.jsx";
 import Login from "./components/Login.jsx"
-
+import Register from "./components/Register";
+import AuthHeader from "./components/AuthHeader.jsx";
 import "./css/HomePage.css";
 
 
@@ -26,9 +27,22 @@ export default function App() {
       />
       <Route path="/login" 
       element = {
-        <Login />
+      <div className="home-page">
+        <AuthHeader />
+        <main>
+          <Login />
+        </main>
+      </div>
       }
       />
+      <Route path="/register" element={
+        <div className="home-page">
+          <AuthHeader />
+          <main>
+            <Register />
+          </main>
+        </div>
+        } />
     </Routes>
   );
 }

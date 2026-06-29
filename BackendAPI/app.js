@@ -26,24 +26,6 @@ app.use(cors({
     origin: "http://localhost:5173"
 }));
 
-//middleware functions
-function getUsers() {
-    const data = fs.readFileSync(dataPath, 'utf-8')
-    return JSON.parse(data)
-}
-
-async function log(message) {
-    const timestamp = new Date().toISOString();
-
-    await fs.promises.appendFile(
-        "server.log",
-        `[${timestamp}] ${message}\n`
-    );
-}
-
-function saveUsers(usersArray) {
-    fs.writeFileSync(dataPath, JSON.stringify({users : usersArray}, null, 2))
-}
 
 //REST APIs
 // using static and middleware.
@@ -56,8 +38,8 @@ app.use('/api', router);
 
 //Database Handling.
 async function datastart(){
-    await reset_Database(); //empty the database.
-    await createTables();   //create all the tables if they dont exist.
+    // await reset_Database(); //empty the database.
+    // await createTables();   //create all the tables if they dont exist.
 }
 // altertables();
 datastart();

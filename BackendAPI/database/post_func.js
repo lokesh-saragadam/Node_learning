@@ -3,38 +3,6 @@ const pool = require('./db')
 
 const platformMap = {};
 
-async function post_users(name){
-    try{
-    // const result = await pool.query(`
-    //     SELECT userid, name
-    //     FROM users
-    //     ORDER BY userid;
-        // SELECT name, COUNT(*)
-        // FROM users
-        // GROUP BY name
-        // HAVING COUNT(*) > 1;
-        
-    //     `);
-
-    const result = await pool.query(
-            `INSERT INTO users(name)
-             VALUES($1)
-             ON CONFLICT(name) DO NOTHING
-             RETURNING *`,
-            [name]
-        );
-    console.log(result.rows);
-        // console.log(result.rows[0]);
-    if(result.rows.length === 0){
-        return -1;
-    }
-    console.log("User stored");
-    return result.rows[0].userid;
-
-    } catch (err) {
-        console.log(err);
-    }
-}
 async function post_platforms(platforms){
     for(const elem in platforms){
         try{
@@ -126,13 +94,12 @@ async function synced(userid){
     )
 }
 
-async function postnewuser(username,platforms,lcdata,cfdata){
+async function postnewuser(userid,platforms,lcdata,cfdata){
 
     await pool.query("BEGIN");
 
     try {
 
-        const userid = await post_users(username);
         console.log("userid =", userid, typeof userid);
         if(userid === -1){
             await pool.query("ROLLBACK");

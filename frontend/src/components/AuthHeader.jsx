@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import logo from "/ct_vector.jpg";
 
-export default function LoginHeader(){
+export default function AuthHeader(){
     return (
         <>
         <header className = "login-header">
@@ -19,4 +19,4 @@ export default function LoginHeader(){
         </header>
         </>
     )
-}
+};

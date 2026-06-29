@@ -21,7 +21,7 @@
   content: '';
   position: absolute;
   width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(191, 213, 222, 0.08) 0%, transparent 70%);
   top: -100px; right: -100px;
   border-radius: 50%;
   pointer-events: none;
@@ -347,7 +347,7 @@
     box-shadow:
         0 15px 40px rgba(0,0,0,0.4),
         0 0 20px rgba(59,130,246,0.15);
-
+    display: inline-block;
     color: white;
 }
 .login-container img {
@@ -359,7 +359,6 @@
 .login-container input {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
     color: white;
     margin-top:20px;
     padding-top:10px;
@@ -367,6 +366,7 @@
 }
 
 .login-container input::placeholder {
+    text-align: center;
     font-family: 'Space Mono', monospace;
     color: rgba(255,255,255,0.6);
 }

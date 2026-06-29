@@ -1,48 +1,52 @@
-import LoginHeader from "./LoginHeader";
-import logo from "/ct_vector.jpg";
+import { Link } from "react-router-dom";
+
 export default function Login() {
-    function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = {
-        username: e.target.username.value,
-        platforms: {
-            Leetcode: e.target["platforms[Leetcode]"].value,
-            Codeforces: e.target["platforms[Codeforces]"].value
-        }
+      email: e.target.email.value,
+      password: e.target.password.value,
     };
 
-    fetch("http://localhost:3000/users", {
+    const response = await fetch(
+      "http://localhost:3000/api/login",
+      {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
-    })
-    .then(res => res.json())
-    .then(data => console.log(data));
-}
-    return(
-        
-        <>
-        <LoginHeader/>
-        <div className="login-page">
+        body: JSON.stringify(formData),
+      }
+    );
+    const data = await response.json();
+    localStorage.setItem("token", data.token);   //in future make it HttpOnly Secure Cookie
+
+    console.log(data);
+  };
+
+  return (
+    <div className="login-page">
 
         <div className="login-welcome">
-            <h1>Welcome! Lets get <span className="Highlight">you</span> started ..</h1>
+            <h1>Welcome Back! </h1>
         </div>
-        <div className = "login-container">
-        <img src={logo} alt = "code-track-logo"/>
-        <form onSubmit={handleSubmit}>
+    <div className = "login-container">
+      <h2>Login</h2>
 
-            <input type="text" id="username" name="username" placeholder="Username"required />
-            <input type="text" id="leetcode" name="platforms[Leetcode]" placeholder="Leetcode username" />
-            <input type="text" id="codeforces" name="platforms[Codeforces]" placeholder="CodeForces username"/>
+      <form onSubmit={handleSubmit}>
+        <input name="email" type="email" placeholder="Email" required/>
 
-            <button type="submit">Submit</button>
-        </form>
-        </div>
-        </div>
-        </>
-    );
+        <input name="password" type="password" placeholder="Password" required/>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p>
+        Don't have an account?
+        <Link to="/register"> Register</Link>
+      </p>
+    </div>
+    </div>
+  );
 }

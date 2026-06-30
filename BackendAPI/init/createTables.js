@@ -20,7 +20,8 @@ async function createTables() {
                 userid SERIAL PRIMARY KEY,
                 username VARCHAR(100) UNIQUE,
                 password VARCHAR(100),
-                email VARCHAR(100) UNIQUE
+                email VARCHAR(225) UNIQUE,
+                created_at TIMESTAMP DEFAULT NOW()
             );
 
             CREATE TABLE IF NOT EXISTS platforms (
@@ -30,8 +31,8 @@ async function createTables() {
             
             CREATE TABLE IF NOT EXISTS user_handles (
                 handleid SERIAL PRIMARY KEY,
-                userid INT REFERENCES users(userid),
-                platformid INT REFERENCES platforms(platformid),
+                userid INT REFERENCES users(userid) ON DELETE CASCADE,
+                platformid INT REFERENCES platforms(platformid) ON DELETE CASCADE,
                 handle VARCHAR(100) UNIQUE,
                 rating INT,
                 UNIQUE (userid,platformid)

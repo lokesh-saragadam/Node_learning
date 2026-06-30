@@ -3,17 +3,15 @@ const pool = require('../database/db')
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv").config();
 
 const registerUser = asyncHandler(async (req,res) => {
-    username = req.body.username;
+    req_username = req.body.username;
     password = req.body.password;
-    email = req.body.email;
+    req_email = req.body.email;
 
     //checking if the username,email already exists
-    const result = await pool.query(
-        'SELECT * FROM users WHERE username = $1 OR email = $2',
-        [username, email]
-    );
+    const result = await prisma.problem.findUnique({ where: { username: req_username,email : req_email } })
     if(result.rows.length > 0){
         return res.status(400).json({"message": `Username or Email id already exists`});
     }
@@ -24,9 +22,7 @@ const registerUser = asyncHandler(async (req,res) => {
             'INSERT INTO users (username, password, email) VALUES ($1, $2, $3)',
             [username, hashedPassword, email]
         );
-        res.send(`
-            <h1>Registration Successful</h1>
-            <a href='/login.html'>Go to Login</a>`);
+        res.status(400).json({"message": `Registration Successful`});
     }
 }) 
 
@@ -58,7 +54,6 @@ const loginUser = asyncHandler(async (req,res)=>{
                     expiresIn: "1h"
                 }
             );
-
             res.json({ token });
         }
     }

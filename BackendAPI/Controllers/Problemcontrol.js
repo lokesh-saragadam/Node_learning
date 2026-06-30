@@ -1,5 +1,5 @@
 //Imports
-const pool = require('../database/db');
+const { pool , prisma } = require('../database/db');
 const asyncHandler = require('express-async-handler');
 
 //Functions
@@ -8,9 +8,7 @@ const { processleetcodedata } = require('../services/leetcode');
 const { postnewuser } = require('../database/post_func');
 
 const getProblems = asyncHandler( async (req, res) => {
-    const result = await pool.query(
-        'SELECT * FROM problems'
-    );
+    const result = await prisma.problems.findMany();
     res.json(result.rows);
 }); 
 

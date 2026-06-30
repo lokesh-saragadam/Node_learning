@@ -5,11 +5,16 @@ const { loginUser, registerUser } = require('../Authentication/Auth');
 const { getUsers } = require('../Controllers/Usercontrol')
 const { getProblems , postUserData } = require('../Controllers/Problemcontrol');
 const { stats_summary } = require('../Controllers/Statscontrol');
+const { authenticate } = require('../Middleware/protectRoutes');
 
-router.route('/users/:id').get(getUsers)
-router.route('/stats/summary').get(stats_summary);
-router.route('/problems').get(getProblems).post( postUserData );;
-router.route('/register').post(registerUser);
+//@Public (Does not need Authorization)
+router.route('/ register').post(registerUser);
 router.route('/login').post(loginUser);
+
+//@Private  (Use JWT Authorization)
+router.route('/users/:id').get(authenticate,getUsers)
+router.route('/stats/summary').get(authenticate,stats_summary);
+router.route('/problems').get(authenticate,getProblems).post( authenticate,postUserData );;
+
 
 module.exports = { router };

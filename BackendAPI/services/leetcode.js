@@ -1,6 +1,6 @@
 const axios = require("axios");
 const fs = require("fs/promises");
-const pool = require('../database/db.js')
+const { pool , prisma } = require('../database/db.js')
 
 
 function log(message) {

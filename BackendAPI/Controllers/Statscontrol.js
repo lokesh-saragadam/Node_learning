@@ -1,4 +1,4 @@
-const pool = require('../database/db');
+const { pool , prisma } = require('../database/db');
 const asyncHandler = require('express-async-handler');
 
 const stats_summary = asyncHandler(async (req, res) => {

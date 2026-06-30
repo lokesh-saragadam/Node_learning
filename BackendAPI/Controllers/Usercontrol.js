@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
-const pool = require('../database/db');
+const  { pool , prisma } = require('../database/db');
+
+
 
 //@desc Get all users
 //@req has no body

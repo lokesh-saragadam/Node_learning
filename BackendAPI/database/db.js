@@ -1,11 +1,14 @@
 const { Pool } = require('pg')
-
+const { PrismaClient } = require('@prisma/client');
+const dotenv = require('dotenv').config();
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'Myapp1',
-    password: 'IITHch@2615',
+    password: process.env.POOL_PASS,
     port: 5432,
 });
 
-module.exports = pool
+const prisma = new PrismaClient();
+ 
+module.exports = { pool , prisma };

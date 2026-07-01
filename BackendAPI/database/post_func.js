@@ -1,18 +1,20 @@
 const { DatabaseError } = require('pg');
-const pool = require('./db')
+const { pool , prisma } = require('./db')
 
 const platformMap = {};
 
 async function post_platforms(platforms){
     for(const elem in platforms){
         try{
-        const result = await pool.query(
-            `INSERT INTO platforms(name)
-             VALUES($1)
-             ON CONFLICT DO NOTHING
-             RETURNING *`,
-            [elem]
-        );
+        const platform = await prisma.platforms.upsert({
+            where: {
+                name: elem
+            },
+            update: {},
+            create: {
+                name: elem
+            }
+        });
     } catch (err) {
         console.log(err);
     }
@@ -21,12 +23,14 @@ async function post_platforms(platforms){
 };
 async function post_userhandles(user_handle,userid,platformid,rating){
     try{
-    const result = await pool.query(
-            `INSERT INTO user_handles(userid, platformid, handle, rating)
-             VALUES($1, $2, $3, $4)
-             RETURNING *`,
-            [userid, platformid, user_handle, rating]
-        );
+    const result = await prisma.user_handles.create({
+        data:{
+            userid,
+            platformid,
+            handle: user_handle,
+            rating
+        }
+    });
     } catch (err) {
         console.log(err);
     }
@@ -35,15 +39,16 @@ async function post_problems(platformid,unique_problems){
     const problem_map = new Map();
     for (const element of unique_problems) {
         try{
-            const result = await pool.query(
-                    `INSERT INTO problems(platformid, problemcode, problemtitle, difficulty, tags)
-                    VALUES($1, $2, $3, $4, $5)
-                    ON CONFLICT(problemcode) DO NOTHING
-                    RETURNING *`,
-                    [platformid,element.problemcode, element.problemtitle, element.difficulty, element.tags]
-                );
-                if (result.rows.length > 0) {
-
+            const result = await prisma.problems.create({
+                data:{
+                    platformid,
+                    problemcode:element.problemcode,
+                    problemtitle:element.problemtitle,
+                    difficulty:element.difficulty,
+                    tags:element.tags
+                }
+            });
+            if (result.length > 0) {
                     problem_map.set(element.problemcode,result.rows[0].problemid)
                 }
             } catch (err) {
@@ -58,17 +63,28 @@ async function post_solved_problems(userid,solved_problems,problem_map){
     
     for (const elem of solved_problems) {
         try{
-            const result = await pool.query(
-                    `INSERT INTO solved_problems(userid, problemid, status, language, solvedat)
-                    VALUES($1, $2, $3, $4, $5)
-                    ON CONFLICT(userid, problemid) DO UPDATE SET
-                    status = EXCLUDED.status,
-                    language = EXCLUDED.language,
-                    solvedat = EXCLUDED.solvedat
-                    RETURNING *`,
-                    [userid,problem_map.get(elem.problemid), elem.status, elem.language, elem.solvedat]
-                );
-                if (result.rows.length > 0) {
+            const result = await prisma.solved_problems.upsert({
+                where: {
+                    userid_problemid: {
+                        userid,
+                        problemid: problem_map.get(elem.problemid)
+                    }
+                },
+                update: {
+                    status: elem.status,
+                    language: elem.language,
+                    solvedat: elem.solvedat
+                },
+                create: {
+                    userid,
+                    problemid: problem_map.get(elem.problemid),
+                    status: elem.status,
+                    language: elem.language,
+                    solvedat: elem.solvedat
+                }
+            });
+            
+            if (result.rows.length > 0) {
             }
             } catch (err) {
                 console.log(err);

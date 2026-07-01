@@ -8,7 +8,7 @@ const { stats_summary } = require('../Controllers/Statscontrol');
 const { authenticate } = require('../Middleware/protectRoutes');
 
 //@Public (Does not need Authorization)
-router.route('/ register').post(registerUser);
+router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
 
 //@Private  (Use JWT Authorization)

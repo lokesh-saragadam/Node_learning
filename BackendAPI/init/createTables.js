@@ -1,7 +1,7 @@
 // DROP SCHEMA public CASCADE;
  // CREATE SCHEMA public;
 
-const pool = require('../database/db');
+const { pool , prisma } = require('../database/db');
 async function reset_Database(){
     try {
         await pool.query(`

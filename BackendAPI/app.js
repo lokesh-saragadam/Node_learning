@@ -5,7 +5,7 @@ const axios = require("axios");
 const fs = require('fs');
 const path = require('path');
 //Postgresql
-const pool = require('./database/db')
+const { pool , prisma } = require('./database/db')
 
 //functions and other imports
 const {reset_Database,createTables,altertables} = require('./init/createTables')

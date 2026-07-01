@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../database/db')
+const { pool , prisma } = require('../database/db')
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
 const jwt = require("jsonwebtoken");
@@ -11,34 +11,37 @@ const registerUser = asyncHandler(async (req,res) => {
     req_email = req.body.email;
 
     //checking if the username,email already exists
-    const result = await prisma.problem.findUnique({ where: { username: req_username,email : req_email } })
-    if(result.rows.length > 0){
-        return res.status(400).json({"message": `Username or Email id already exists`});
-    }
-    else{
+    const result = await prisma.users.findUnique({ where: { username: req_username,email : req_email } })
+    if(!result){
         const saltrounds = 10
         const hashedPassword = await bcrypt.hash(password, saltrounds);
-        await pool.query(
-            'INSERT INTO users (username, password, email) VALUES ($1, $2, $3)',
-            [username, hashedPassword, email]
-        );
-        res.status(400).json({"message": `Registration Successful`});
+        // await pool.query(
+        //     'INSERT INTO users (username, password, email) VALUES ($1, $2, $3)',
+        //     [username, hashedPassword, email]
+        // );
+        await prisma.users.create({
+            data: {
+                username:req_username,
+                password: hashedPassword,
+                email:req_email
+            }
+        });
+        return res.status(201).json({"message": `Registration Successful`});
+    }
+    else{
+        return res.status(400).json({"message": `Username or Email id already exists`});
     }
 }) 
 
 const loginUser = asyncHandler(async (req,res)=>{
     email = req.body.email;
     password = req.body.password;
-    const result = await pool.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]     
-    );
-    
-    if(result.rows.length === 0){
+    const result = await prisma.users.findUnique({ where: {email : email}})
+    if(!result){
         return res.status(400).json({"message": `Email does not exist`});
     }
     else{
-        const user = result.rows[0];
+        const user = result;
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
             return res.status(400).json({"message": `Invalid Password `});
@@ -46,7 +49,7 @@ const loginUser = asyncHandler(async (req,res)=>{
         else{
             const token = jwt.sign(
                 {
-                    userId: user._id,
+                    userId: user.userid,
                     email: user.email
                 },
                 process.env.JWT_SECRET,

@@ -1,6 +1,7 @@
 const { Pool } = require('pg')
 const { PrismaClient } = require('@prisma/client');
 const dotenv = require('dotenv').config();
+
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',

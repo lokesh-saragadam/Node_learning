@@ -1,14 +1,12 @@
-const pool = require('./db')
+const { pool , prisma } = require('./db')
 
 const platformMap = {};
 
 async function loadPlatforms() {
 
-    const result = await pool.query(
-        `SELECT * FROM platforms`
-    );
+    const result = await prisma.platforms.findMany();
 
-    result.rows.forEach(row => {
+    result.forEach(row => {
         platformMap[row.name] = row.platformid;
     });
 

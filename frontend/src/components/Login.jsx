@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import AuthHeader from "./AuthHeader.jsx";
 
 export default function Login() {
   const handleSubmit = async (e) => {
@@ -21,12 +22,16 @@ export default function Login() {
     );
     const data = await response.json();
     localStorage.setItem("token", data.token);   //in future make it HttpOnly Secure Cookie
-
+    const userId = data.userId;
+    if(data.token){
+        navigate(`/profile/${userId}`);//redirect to home page after successful login.
+    }
     console.log(data);
   };
 
   return (
     <div className="login-page">
+        <AuthHeader/>
 
         <div className="login-welcome">
             <h1>Welcome Back! </h1>

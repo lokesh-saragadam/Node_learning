@@ -8,7 +8,7 @@ const { processleetcodedata } = require('../services/leetcode');
 const { postnewuser } = require('../database/post_func');
 
 const getProblems = asyncHandler( async (req, res) => {
-    const result = await prisma.problems.findMany();
+    const result = await prisma.Problem.findMany();
     res.json(result.rows);
 }); 
 

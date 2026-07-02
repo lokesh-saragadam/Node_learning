@@ -6,7 +6,7 @@ import Stats from "./components/Stats.jsx";
 import Features from "./components/Features.jsx";
 import Login from "./components/Login.jsx"
 import Register from "./components/Register";
-import AuthHeader from "./components/AuthHeader.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import "./css/HomePage.css";
 
 
@@ -27,22 +27,17 @@ export default function App() {
       />
       <Route path="/login" 
       element = {
-      <div className="home-page">
-        <AuthHeader />
-        <main>
-          <Login />
-        </main>
-      </div>
+        <Login />
       }
       />
       <Route path="/register" element={
-        <div className="home-page">
-          <AuthHeader />
-          <main>
             <Register />
-          </main>
-        </div>
         } />
-    </Routes>
+      <Route path="/profile" element={
+        <div className="home-page">
+          <ProfilePage />
+        </div>
+      } /> 
+      </Routes>
   );
 }

@@ -4,7 +4,7 @@ const platformMap = {};
 
 async function loadPlatforms() {
 
-    const result = await prisma.platforms.findMany();
+    const result = await prisma.Platform.findMany();
 
     result.forEach(row => {
         platformMap[row.name] = row.platformid;

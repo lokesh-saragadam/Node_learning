@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import AuthHeader from "./AuthHeader.jsx";
 
 export default function Register() {
   const handleSubmit = async (e) => {
@@ -27,7 +28,7 @@ export default function Register() {
 
   return (
     <div className="login-page">
-
+        <AuthHeader/>
         <div className="login-welcome">
             <h1>Welcome! Lets get <span className="Highlight">you</span> started ..</h1>
         </div>

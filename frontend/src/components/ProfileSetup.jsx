@@ -1,6 +1,6 @@
-import LoginHeader from "./LoginHeader";
 import logo from "/ct_vector.jpg";
-export default function Login() {
+
+export default function ProfileSetup() {
     function handleSubmit(e) {
     e.preventDefault();
 
@@ -25,13 +25,11 @@ export default function Login() {
     return(
         
         <>
-        <LoginHeader/>
         <div className="login-page">
         <div className = "login-container">
         <img src={logo} alt = "code-track-logo"/>
         <form onSubmit={handleSubmit}>
 
-            <input type="text" id="username" name="username" placeholder="Username"required />
             <input type="text" id="leetcode" name="platforms[Leetcode]" placeholder="Leetcode username" />
             <input type="text" id="codeforces" name="platforms[Codeforces]" placeholder="CodeForces username"/>
 

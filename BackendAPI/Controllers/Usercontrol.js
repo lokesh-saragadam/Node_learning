@@ -8,11 +8,14 @@ const  { pool , prisma } = require('../database/db');
 //@res needs all Users out.
 const getUsers = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const result = await pool.query(`
-        SELECT username FROM users
-        WHERE userid = $1`,
-        [id]
-    );
+    const result = await prisma.User.findUnique({
+        where: {
+            userid: id
+        },
+        select: {
+            username: true
+        }
+    });
     const name = result.rows[0].username
     res.status(400).send(`Hello ${name}!`);
 });

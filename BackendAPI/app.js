@@ -8,11 +8,7 @@ const path = require('path');
 const { pool , prisma } = require('./database/db')
 
 //functions and other imports
-const {reset_Database,createTables,altertables} = require('./init/createTables')
-const {processcodeforcesdata} = require('./services/codeforces')
-const {postnewuser} = require('./database/post_func');
-const { loadPlatforms } = require('./database/load_func')
-const {processleetcodedata} = require('./services/leetcode');
+const {reset_Database} = require('./init/createTables')
 const {router} = require('./Routes/router');
 
 const { platform } = require('os');

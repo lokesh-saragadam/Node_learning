@@ -11,7 +11,7 @@ const registerUser = asyncHandler(async (req,res) => {
     req_email = req.body.email;
 
     //checking if the username,email already exists
-    const result = await prisma.users.findUnique({ where: { username: req_username,email : req_email } })
+    const result = await prisma.User.findUnique({ where: { username: req_username,email : req_email } })
     if(!result){
         const saltrounds = 10
         const hashedPassword = await bcrypt.hash(password, saltrounds);
@@ -19,7 +19,7 @@ const registerUser = asyncHandler(async (req,res) => {
         //     'INSERT INTO users (username, password, email) VALUES ($1, $2, $3)',
         //     [username, hashedPassword, email]
         // );
-        await prisma.users.create({
+        await prisma.User.create({
             data: {
                 username:req_username,
                 password: hashedPassword,
@@ -36,7 +36,7 @@ const registerUser = asyncHandler(async (req,res) => {
 const loginUser = asyncHandler(async (req,res)=>{
     email = req.body.email;
     password = req.body.password;
-    const result = await prisma.users.findUnique({ where: {email : email}})
+    const result = await prisma.User.findUnique({ where: {email : email}})
     if(!result){
         return res.status(400).json({"message": `Email does not exist`});
     }
@@ -57,7 +57,7 @@ const loginUser = asyncHandler(async (req,res)=>{
                     expiresIn: "1h"
                 }
             );
-            res.json({ token });
+            res.json({ userId:user.userid,token });
         }
     }
 });

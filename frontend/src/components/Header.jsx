@@ -1,11 +1,12 @@
 // Header.jsx
+import logo from "/ct_vector.jpg";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <span className="logo-dot" />
+        <img src={logo} alt = "code-track-logo"/>
         CodeTrack
       </div>
       <nav className="nav">

@@ -1,18 +1,23 @@
 import logo from "/ct_vector.jpg";
+import { useParams } from "react-router-dom";
+import {log} from "../utils/logger.js";
 
-export default function ProfileSetup() {
-    function handleSubmit(e) {
+export default function ProfileSetup () {
+    const { id } = useParams();
+    // console.log("userid : " , id);
+    log("Profilesetup.jsx","ProfileSetup","Request received");
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = {
-        username: e.target.username.value,
+        userId: id,
         platforms: {
             Leetcode: e.target["platforms[Leetcode]"].value,
             Codeforces: e.target["platforms[Codeforces]"].value
         }
     };
-
-    fetch("http://localhost:3000/users", {
+    console.log("form Data: ",formData);
+    fetch(`http://localhost:3000/users/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -21,6 +26,8 @@ export default function ProfileSetup() {
     })
     .then(res => res.json())
     .then(data => console.log(data));
+    log("Profilesetup.jsx","ProfileSetup","Request resolved");
+
 }
     return(
         

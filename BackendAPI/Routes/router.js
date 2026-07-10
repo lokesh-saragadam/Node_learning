@@ -12,7 +12,7 @@ router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
 
 //@Private  (Use JWT Authorization)
-router.route('/users/:id').get(authenticate,getUsers)
+router.route('/users/:id').get(authenticate,getUsers).post(authenticate,postUserData);
 router.route('/stats/summary').get(authenticate,stats_summary);
 router.route('/problems').get(authenticate,getProblems).post( authenticate,postUserData );;
 

@@ -17,7 +17,7 @@ export default function Hero() {
       </p>
 
       <div className="actions">
-        <button className="btn primary" onClick={() => window.location.href = 'signup'}>
+        <button className="btn primary" onClick={() => window.location.href = 'register'}>
           Sign up free
         </button>
         <button className="btn secondary" onClick={() => window.location.href = 'login'}>

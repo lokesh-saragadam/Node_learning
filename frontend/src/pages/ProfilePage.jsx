@@ -4,7 +4,7 @@ import ProfileSetup from "../components/ProfileSetup.jsx";
 export default function ProfilePage(){
 
     return (
-        <div className="home_page">
+        <div className="ok">
             <ProfileHeader/>
             <main>
                 <ProfileSetup/>

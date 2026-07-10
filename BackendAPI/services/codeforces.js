@@ -1,26 +1,34 @@
 const axios = require('axios')
 const fs = require('fs')
+const log = require("../utils/logger");
 
 
 async function getUsers_1(handle){
+    log("codeforces.js","getUsers_1","Request received");
+
     try {
     const res = await axios.get(
         `https://codeforces.com/api/user.status?handle=${handle}`,{
             timeout:5000 //5 secs timeout,
         }
     );
+    log("codeforces.js","getUsers_1","Request resolved");
+
     return res.data.result;
     } catch (err){
         console.log(err)
     };
 }
 async function getUserInfo(handle) {
+    log("codeforces.js","getUserInfo","Request received");
+
     try {
         const res = await axios.get(
             `https://codeforces.com/api/user.info?handles=${handle}`
         );
 
         const user = res.data.result[0];
+    log("codeforces.js","getUserInfo","Request resolved");
 
         return user;
 
@@ -30,6 +38,8 @@ async function getUserInfo(handle) {
 }
 
 async function getUniquesolved_problems(submissions){
+    log("codeforces.js","getUniquesolved_problems","Request received");
+
     const accepted = submissions.filter(
     sub => sub.verdict === "OK"
     );
@@ -73,17 +83,23 @@ async function getUniquesolved_problems(submissions){
             );
         };
     })
+    log("codeforces.js","getUniquesolved_problems","Request resolved");
+
 
     return {solved_problems,unique_problems};
 }
 
 async function processcodeforcesdata(cfhandle){
 
+    log("codeforces.js","processcodeforcesdata","Request received");
+
     const submissions = await getUsers_1(cfhandle); //to save for problems.
     const user_info = await getUserInfo(cfhandle); //for user rating
     const rating = user_info.rating;
     // to post them into databases.
     const {solved_problems,unique_problems} = await getUniquesolved_problems(submissions);
+    log("codeforces.js","processcodeforcesdata","Request resolved");
+
     return {rating,solved_problems,unique_problems};
 }
 async function main(){

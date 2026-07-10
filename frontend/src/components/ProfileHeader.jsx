@@ -9,7 +9,7 @@ export default function ProfileHeader() {
         CodeTrack
       </div>
       <nav className="nav">
-        <Link to="/profile">Profile</Link>
+        <Link to="/profile/:id">Profile</Link>
       </nav>
     </header>
   );

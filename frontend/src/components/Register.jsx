@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import AuthHeader from "./AuthHeader.jsx";
+import {log} from "../utils/logger.js";
 
 export default function Register() {
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,8 +23,12 @@ export default function Register() {
         body: JSON.stringify(formData),
       }
     );
-
     const data = await response.json();
+    localStorage.setItem("token", data.token);   //in future make it HttpOnly Secure Cookie
+    const userId = data.userId;
+    if(data.token){
+        navigate(`/onboarding/${userId}`);//redirect to home page after successful login.
+    }
     console.log(data);
   };
 

@@ -4,10 +4,12 @@ const cors = require("cors");
 const axios = require("axios");
 const fs = require('fs');
 const path = require('path');
+
 //Postgresql
 const { pool , prisma } = require('./database/db')
 
 //functions and other imports
+const log = require("./utils/logger");
 const {reset_Database} = require('./init/createTables')
 const {router} = require('./Routes/router');
 
@@ -34,7 +36,7 @@ app.use('/api', router);
 
 //Database Handling.
 async function datastart(){
-    // await reset_Database(); //empty the database.
+    await reset_Database(); //empty the database.
     // await createTables();   //create all the tables if they dont exist.
 }
 // altertables();

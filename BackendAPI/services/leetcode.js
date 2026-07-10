@@ -1,16 +1,7 @@
 const axios = require("axios");
 const fs = require("fs/promises");
 const { pool , prisma } = require('../database/db.js')
-
-
-function log(message) {
-    const timestamp = new Date().toISOString();
-
-    fs.appendFileSync(
-        'server.log',
-        `[${timestamp}] ${message}\n`
-    );
-}
+const log = require("../utils/logger");
 
 function sleep(ms) {
     return new Promise(resolve =>
@@ -30,6 +21,7 @@ function sleep(ms) {
 //         }
 
 async function getFullUserData(username,retries=2) {
+    log("leetcode.js","getFullUserData","Request received");
 
     const query = `
     query fullData($username: String!, $limit: Int!) {
@@ -69,6 +61,7 @@ async function getFullUserData(username,retries=2) {
         }
     );
 
+    log("leetcode.js","getFullUserData","Request resolved");
     return response.data;
     } catch(err) {
 
@@ -84,7 +77,7 @@ async function getFullUserData(username,retries=2) {
 
             return getFullUserData(username, retries - 1);
         }
-
+        log("leetcode.js","getFullUserData","Error ",err);
         throw err;
     }
 }

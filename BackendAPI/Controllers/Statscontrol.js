@@ -1,7 +1,10 @@
 const { pool , prisma } = require('../database/db');
 const asyncHandler = require('express-async-handler');
+const log = require("../utils/logger");
 
 const stats_summary = asyncHandler(async (req, res) => {
+    log("Statscontrol.js","stats_summary","Request received");
+     
      const result = await prisma.Problem.count();
         const totalcount = result.rows[0].count;
 
@@ -18,6 +21,7 @@ const stats_summary = asyncHandler(async (req, res) => {
                 _all: true
             }
         });
+    log("Statscontrol.js","stats_summary","Request resolved");
         
         res.send(result_2.rows);
 });

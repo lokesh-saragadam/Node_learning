@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
+const log = require("../utils/logger");
 
 function authenticate(req, res, next) {
-
+    
     const authHeader =
         req.headers.authorization;
 

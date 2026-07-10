@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import AuthHeader from "./AuthHeader.jsx";
+import {log} from "../utils/logger.js";
 
 export default function Login() {
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,7 +26,7 @@ export default function Login() {
     localStorage.setItem("token", data.token);   //in future make it HttpOnly Secure Cookie
     const userId = data.userId;
     if(data.token){
-        navigate(`/profile/${userId}`);//redirect to home page after successful login.
+        navigate(`/dashboard/${userId}`);//redirect to home page after successful login.
     }
     console.log(data);
   };

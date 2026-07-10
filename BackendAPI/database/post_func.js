@@ -1,9 +1,11 @@
 const { DatabaseError } = require('pg');
 const { pool , prisma } = require('./db')
-
+const log = require("../utils/logger");
 const platformMap = {};
 
 async function post_platforms(db,platforms){
+    log("post_func.js","post_platforms","Request received");
+
     for(const elem in platforms){
         try{
         const platform = await db.Platform.upsert({
@@ -19,9 +21,12 @@ async function post_platforms(db,platforms){
         console.log(err);
     }
     }
+    log("post_func.js","post_platforms","Request resolved");
     return platformMap;
 };
 async function post_userhandles(db,user_handle,userid,platformid,rating){
+    log("post_func.js","post_userhandles","Request received");
+
     try{
     const result = await db.UserHandle.create({
         data:{
@@ -34,8 +39,12 @@ async function post_userhandles(db,user_handle,userid,platformid,rating){
     } catch (err) {
         console.log(err);
     }
+    log("post_func.js","post_userhandles","Request resolved");
+
 };
 async function post_problems(db,platformid,unique_problems){
+    log("post_func.js","post_problems","Request received");
+
     const problem_map = new Map();
     for (const element of unique_problems) {
         try{
@@ -55,11 +64,14 @@ async function post_problems(db,platformid,unique_problems){
                 console.log(err);
             } 
         };
+
+    log("post_func.js","post_problems","Request resolved");
     
     console.log(`Unique problems have been stored  Recieved ${unique_problems.length}`);
     return problem_map;
 }
 async function post_solved_problems(db,userid,solved_problems,problem_map){
+    log("post_func.js","post_solved_problems","Request received");
     
     for (const elem of solved_problems) {
         try{
@@ -90,16 +102,23 @@ async function post_solved_problems(db,userid,solved_problems,problem_map){
                 console.log(err);
             }
     };
+    log("post_func.js","post_solved_problems","Request resolved");
 
     console.log(`The problems have been logged into the database,Recieved ${solved_problems.length}`);
 }
 
 async function postproblems(db,userid,platformid,unique_problems,solved_problems){
+    log("post_func.js","postproblems","Request received");
+
     const problem_map = await post_problems(db,platformid,unique_problems);
     await post_solved_problems(db,userid,solved_problems,problem_map);
+    log("post_func.js","postproblems","Request resolved");
+    
 }
 
 async function synced(db,userid){
+    log("post_func.js","synced","Request received");
+
     await db.UserHandle.updateMany({
         where: {
             userid: userid,
@@ -111,9 +130,13 @@ async function synced(db,userid){
             last_synced_at: new Date()
         }
     });
+    log("post_func.js","synced","Request resolved");
+
 }
 
 async function postnewuser(userid,platforms,lcdata,cfdata){
+    log("post_func.js","postnewuser","Request received");
+
 
     await prisma.$transaction(async (tx) => {
 
@@ -157,6 +180,8 @@ async function postnewuser(userid,platforms,lcdata,cfdata){
 
     });
     console.error(err);
+    log("post_func.js","postnewuser","Request resolved");
+
 }
 
 

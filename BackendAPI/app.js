@@ -36,11 +36,11 @@ app.use('/api', router);
 
 //Database Handling.
 async function datastart(){
-    await reset_Database(); //empty the database.
+    // await reset_Database(); //empty the database.
     // await createTables();   //create all the tables if they dont exist.
 }
 // altertables();
-datastart();
+datastart(); 
  
 app.listen(3000,()=>{
     console.log('app is listening....')

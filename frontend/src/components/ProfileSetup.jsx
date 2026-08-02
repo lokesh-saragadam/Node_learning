@@ -4,23 +4,26 @@ import {log} from "../utils/logger.js";
 
 export default function ProfileSetup () {
     const { id } = useParams();
+    const userid = Number(id);
     // console.log("userid : " , id);
     log("Profilesetup.jsx","ProfileSetup","Request received");
 
     const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
-        userId: id,
+        userid: userid,
         platforms: {
             Leetcode: e.target["platforms[Leetcode]"].value,
             Codeforces: e.target["platforms[Codeforces]"].value
         }
     };
     console.log("form Data: ",formData);
-    fetch(`http://localhost:3000/users/${id}`, {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:3000/api/users/${id}`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formData)
     })

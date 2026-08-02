@@ -77,7 +77,7 @@ async function getUniquesolved_problems(submissions){
                 {
                     problemcode: prblmid,
                     problemtitle: sub.problem.name,
-                    difficulty : sub.problem.rating,
+                    rating : sub.problem.rating,
                     tags : sub.problem.tags
                 }
             );

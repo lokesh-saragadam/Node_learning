@@ -126,7 +126,7 @@ async function checkavailability(slugs){
     const result = await pool.query(
     `
     SELECT problemcode
-    FROM problems
+    FROM "Problem"
     WHERE platformid = $1
     AND problemcode = ANY($2)
     `,
@@ -165,6 +165,7 @@ async function processleetcodedata(lchandle){
         const problemtitle = value.title;
         const problemcode = missingslugs[index];
         const difficulty = value.difficulty;
+        const rating = value.difficulty === "Easy" ? 1 : value.difficulty === "Medium" ? 2 : 3;
         const tags = value.topicTags.map(tag => tag.slug);
         
         //data for solved_problems.
@@ -179,6 +180,7 @@ async function processleetcodedata(lchandle){
             problemtitle,
             problemcode,
             difficulty,
+            rating,
             tags
         })
 

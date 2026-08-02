@@ -28,6 +28,8 @@ async function post_userhandles(db,user_handle,userid,platformid,rating){
     log("post_func.js","post_userhandles","Request received");
 
     try{
+    const platforms = await prisma.platform.findMany();
+    console.log(platforms);
     const result = await db.UserHandle.create({
         data:{
             userid,
@@ -54,6 +56,7 @@ async function post_problems(db,platformid,unique_problems){
                     problemcode:element.problemcode,
                     problemtitle:element.problemtitle,
                     difficulty:element.difficulty,
+                    rating:element.rating,
                     tags:element.tags
                 }
             });
@@ -61,7 +64,9 @@ async function post_problems(db,platformid,unique_problems){
                     problem_map.set(element.problemcode,result.rows[0].problemid)
                 }
             } catch (err) {
-                console.log(err);
+                console.error("First failing problem:", element);
+                console.error(err);
+                throw err;    
             } 
         };
 
@@ -75,11 +80,12 @@ async function post_solved_problems(db,userid,solved_problems,problem_map){
     
     for (const elem of solved_problems) {
         try{
+            
             const result = await db.SolvedProblem.upsert({
                 where: {
                     userid_problemid: {
                         userid,
-                        problemid: problem_map.get(elem.problemid)
+                        problemid: problem_map.get(elem.problemcode)
                     }
                 },
                 update: {
@@ -89,7 +95,7 @@ async function post_solved_problems(db,userid,solved_problems,problem_map){
                 },
                 create: {
                     userid,
-                    problemid: problem_map.get(elem.problemid),
+                    problemid: problem_map.get(elem.problemcode),
                     status: elem.status,
                     language: elem.language,
                     solvedat: elem.solvedat
@@ -111,7 +117,7 @@ async function postproblems(db,userid,platformid,unique_problems,solved_problems
     log("post_func.js","postproblems","Request received");
 
     const problem_map = await post_problems(db,platformid,unique_problems);
-    await post_solved_problems(db,userid,solved_problems,problem_map);
+    // await post_solved_problems(db,userid,solved_problems,problem_map);
     log("post_func.js","postproblems","Request resolved");
     
 }
@@ -137,13 +143,14 @@ async function synced(db,userid){
 async function postnewuser(userid,platforms,lcdata,cfdata){
     log("post_func.js","postnewuser","Request received");
 
-
+    const lcusername = platforms.Leetcode;
+    const cfusername = platforms.Codeforces;
     await prisma.$transaction(async (tx) => {
 
         if(userid === -1){
             throw new Error("User already exists");
         }
-
+        console.log("User Id" ,userid)
         await post_platforms(tx, platforms);
 
         await post_userhandles(

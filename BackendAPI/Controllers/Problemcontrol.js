@@ -23,7 +23,7 @@ const postUserData = asyncHandler(async (req, res) => {
     log("Problemcontrol.js","postUserData","Request received");
 
     const { userid, platforms } = req.body;
-    
+    // console.log("User id in post userData :",userid);
     const lcdata = await processleetcodedata(platforms.Leetcode);
     const cfdata = await processcodeforcesdata(platforms.Codeforces);
     

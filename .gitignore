@@ -7,6 +7,9 @@
 #Non neccessary but usefull functions for debugging.
 /BackendAPI/prev_used_func.js
 
+#an extra of dashboard file ignored as of now.
+/frontend/src/components/Dashboard.jsx
+
 # all data mimicing storage files.
 *.json
 

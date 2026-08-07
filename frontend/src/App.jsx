@@ -6,6 +6,7 @@ import Hero from "./components/Hero.jsx";
 import Stats from "./components/Stats.jsx";
 import Features from "./components/Features.jsx";
 import Login from "./components/Login.jsx"
+import DashBoard from "./pages/DashBoard.jsx";
 import Register from "./components/Register";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import "./css/HomePage.css";
@@ -39,6 +40,11 @@ export default function App() {
           <ProfilePage />
         </div>
       } /> 
+      <Route path="/dashboard/:id" element={
+        <div className="home-page">
+          <DashBoard/>
+        </div>
+      } />
       </Routes>
   );
 }

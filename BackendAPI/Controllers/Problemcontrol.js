@@ -31,7 +31,10 @@ const postUserData = asyncHandler(async (req, res) => {
 
     log("Problemcontrol.js","postUserData","Request resolved");
 
-    res.send("Data has been Recieved");
+    res.status(200).json({
+    success: true,
+    message: "Data has been received"
+});
 });
 
 module.exports = { getProblems , postUserData };

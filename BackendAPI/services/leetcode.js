@@ -83,7 +83,9 @@ async function getFullUserData(username,retries=2) {
 }
 
 async function getBatchProblemData(titleSlugs) {
-
+    if (titleSlugs.length === 0) {
+        return {data:{}};
+    }
     const queryFields = titleSlugs
         .map((slug, index) => `
             q${index}: question(titleSlug: "${slug}") {
@@ -175,7 +177,7 @@ async function processleetcodedata(lchandle){
             p => p.titleSlug === problemcode
         )?.timestamp;
         const solvedat = new Date(timestamp * 1000);
-
+ 
         unique_problems.push({
             problemtitle,
             problemcode,

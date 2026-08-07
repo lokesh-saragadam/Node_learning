@@ -1,8 +1,10 @@
 import logo from "/ct_vector.jpg";
 import { useParams } from "react-router-dom";
 import {log} from "../utils/logger.js";
+import { Link , useNavigate } from "react-router-dom";
 
 export default function ProfileSetup () {
+    const navigate = useNavigate();
     const { id } = useParams();
     const userid = Number(id);
     // console.log("userid : " , id);
@@ -19,7 +21,7 @@ export default function ProfileSetup () {
     };
     console.log("form Data: ",formData);
     const token = localStorage.getItem("token");
-    fetch(`http://localhost:3000/api/users/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/users/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -27,9 +29,14 @@ export default function ProfileSetup () {
         },
         body: JSON.stringify(formData)
     })
-    .then(res => res.json())
-    .then(data => console.log(data));
+
+    const text = await res.text();
+
+    // console.log(text.message);
     log("Profilesetup.jsx","ProfileSetup","Request resolved");
+    if(token){
+        navigate(`/dashboard/${userid}`);//redirect to home page after successful login.
+    }
 
 }
     return(

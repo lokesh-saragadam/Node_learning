@@ -29,7 +29,7 @@ async function post_userhandles(db,user_handle,userid,platformid,rating){
 
     try{
     const platforms = await prisma.platform.findMany();
-    console.log(platforms);
+    // console.log(platforms);
     const result = await db.UserHandle.create({
         data:{
             userid,
@@ -60,9 +60,8 @@ async function post_problems(db,platformid,unique_problems){
                     tags:element.tags
                 }
             });
-            if (result.length > 0) {
-                    problem_map.set(element.problemcode,result.rows[0].problemid)
-                }
+            // console.log(result);
+            problem_map.set(element.problemcode, result.problemid);
             } catch (err) {
                 console.error("First failing problem:", element);
                 console.error(err);
@@ -77,15 +76,14 @@ async function post_problems(db,platformid,unique_problems){
 }
 async function post_solved_problems(db,userid,solved_problems,problem_map){
     log("post_func.js","post_solved_problems","Request received");
-    
+    console.log("Problem Map:" ,problem_map);
     for (const elem of solved_problems) {
         try{
-            
             const result = await db.SolvedProblem.upsert({
                 where: {
                     userid_problemid: {
                         userid,
-                        problemid: problem_map.get(elem.problemcode)
+                        problemid: problem_map.get(elem.problemid)
                     }
                 },
                 update: {
@@ -95,17 +93,16 @@ async function post_solved_problems(db,userid,solved_problems,problem_map){
                 },
                 create: {
                     userid,
-                    problemid: problem_map.get(elem.problemcode),
+                    problemid: problem_map.get(elem.problemid),
                     status: elem.status,
                     language: elem.language,
                     solvedat: elem.solvedat
                 }
             });
-            
-            if (result.rows.length > 0) {
-            }
             } catch (err) {
-                console.log(err);
+                console.error("First failing problem:", elem);
+                console.error(err);
+                throw err;  
             }
     };
     log("post_func.js","post_solved_problems","Request resolved");
@@ -117,7 +114,9 @@ async function postproblems(db,userid,platformid,unique_problems,solved_problems
     log("post_func.js","postproblems","Request received");
 
     const problem_map = await post_problems(db,platformid,unique_problems);
-    // await post_solved_problems(db,userid,solved_problems,problem_map);
+    console.log("Returned map:", problem_map);
+    console.log(problem_map instanceof Map);
+    await post_solved_problems(db,userid,solved_problems,problem_map);
     log("post_func.js","postproblems","Request resolved");
     
 }
@@ -186,7 +185,7 @@ async function postnewuser(userid,platforms,lcdata,cfdata){
         );
 
     });
-    console.error(err);
+    // console.error(err);
     log("post_func.js","postnewuser","Request resolved");
 
 }

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import OverviewCards from '../components/OverviewCards';
 import RecentActivity from '../components/RecentActivity';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import Welcome from '../components/Welcome';
 import '../css/Dashboard.css';
 
 /**
@@ -39,8 +40,8 @@ export default function Dashboard() {
       });
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       const json = await res.json();
-      setData(json.dashboardData);
-      console.log("Dashboard Data:", json.dashboardData);
+      setData(json);
+      console.log("Dashboard API Data:", json);
     } catch (err) {
       setError(err.message || 'Failed to load dashboard');
     } finally {
@@ -65,12 +66,15 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+
+      <Welcome username={data.username}/>
+      
       <section className="dashboard__overview">
         <h2 className="section-title">Overview</h2>
-        <OverviewCards overview={data.overview} />
+        <OverviewCards overview={data.dashboardData.overview} />
       </section>
 
-      <RecentActivity recentActivity={data.recentActivity} />
+      <RecentActivity recentActivity={data.dashboardData.recentActivity} />
 
       {/* Reserved for later: Analytics, Heatmap, Recommendations */}
       <section className="dashboard__placeholder" aria-hidden="true" />

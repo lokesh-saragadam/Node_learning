@@ -1,12 +1,7 @@
 // All system modules
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios");
-const fs = require('fs');
-const path = require('path');
-
-//Postgresql
-const { pool , prisma } = require('./database/db')
+const morgan = require('morgan');
 
 //functions and other imports
 const log = require("./utils/logger");
@@ -15,6 +10,13 @@ const {router} = require('./Routes/router');
 
 const { platform } = require('os');
 const app = express()
+
+// 1. Add Morgan at the very top. 
+// This will automatically log every incoming request and its 
+// status code (e.g., "GET /api/users 404")
+
+app.use(morgan('dev'));
+
 
 //others
 
@@ -33,6 +35,21 @@ app.use(express.urlencoded({ extended: true }));
 
 //methods for adding users
 app.use('/api', router);
+
+// 2. Add a Global Error Handler at the very BOTTOM of your file.
+// If ANY route throws an error, it gets caught here instead of crashing the server.
+app.use((err, req, res, next) => {
+    console.error("🔥 ERROR DETECTED 🔥");
+    console.error(`Route: ${req.method} ${req.url}`);
+    console.error(`Message: ${err.message}`);
+    console.error(err.stack); // Shows the exact file and line number!
+    
+    res.status(500).json({
+        success: false,
+        message: "Something went wrong on the server",
+        error: err.message
+    });
+});
 
 //Database Handling.
 async function datastart(){

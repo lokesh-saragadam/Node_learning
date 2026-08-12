@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { ErrorBoundary } from 'react-error-boundary';
 
 // App.jsx
 import Header from "./components/Header.jsx";
@@ -11,40 +12,50 @@ import Register from "./components/Register";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import "./css/HomePage.css";
 
+function ErrorFallback({ error }) {
+  return (
+    <div style={{ color: 'red', padding: '20px' }}>
+      <h2>Something went wrong in this component:</h2>
+      <pre>{error.message}</pre>
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" 
-      element = {
-        <div className="home-page">
-          <Header />
-          <main>
-            <Hero />
-            <Stats />
-            <Features />
-          </main>
-        </div>
-      }
-      />
-      <Route path="/login" 
-      element = {
-        <Login />
-      }
-      />
-      <Route path="/register" element={
-            <Register />
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Routes>
+        <Route path="/" 
+        element = {
+          <div className="home-page">
+            <Header />
+            <main>
+              <Hero />
+              <Stats />
+              <Features />
+            </main>
+          </div>
+        }
+        />
+        <Route path="/login" 
+        element = {
+          <Login />
+        }
+        />
+        <Route path="/register" element={
+              <Register />
+          } />
+        <Route path="/onboarding/:id" element={
+          <div className="home-page">
+            <ProfilePage />
+          </div>
+        } /> 
+        <Route path="/dashboard/:id" element={
+          <div className="home-page">
+            <DashBoard/>
+          </div>
         } />
-      <Route path="/onboarding/:id" element={
-        <div className="home-page">
-          <ProfilePage />
-        </div>
-      } /> 
-      <Route path="/dashboard/:id" element={
-        <div className="home-page">
-          <DashBoard/>
-        </div>
-      } />
-      </Routes>
+        </Routes>
+      </ErrorBoundary>
   );
 }

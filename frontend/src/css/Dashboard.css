@@ -11,7 +11,24 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0 0 16px;
-  color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* *_____________________ Welcome ______________ */
+
+.welcome {
+  padding: 30px;
+  margin-bottom: 25px;
+}
+
+.welcome h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  font-size: 16px;
+  color: #666;
 }
 
 /* ---------- Overview cards ---------- */

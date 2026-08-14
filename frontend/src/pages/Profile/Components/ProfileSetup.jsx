@@ -1,6 +1,6 @@
 import logo from "/ct_vector.jpg";
 import { useParams } from "react-router-dom";
-import {log} from "../utils/logger.js";
+import {log} from "../../../utils/logger.js";
 import { Link , useNavigate } from "react-router-dom";
 
 export default function ProfileSetup () {

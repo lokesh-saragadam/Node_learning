@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from "react-router-dom";
-import OverviewCards from '../components/OverviewCards';
-import RecentActivity from '../components/RecentActivity';
-import LoadingSkeleton from '../components/LoadingSkeleton';
-import Welcome from '../components/Welcome';
-import '../css/Dashboard.css';
+import OverviewCards from './Components/Overview_Recent/OverviewCards.jsx';
+import RecentActivity from './Components/Overview_Recent/RecentActivity.jsx';
+import LoadingSkeleton from './Components/Page/LoadingSkeleton.jsx';
+import Welcome from './Components/Page/Welcome.jsx';
+import { Difficulty , Rating } from './Components/Distributions/Difficulty.jsx';
+import Topic from './Components/Distributions/Topic.jsx'
+import MonthAnaly from './Components/Analytics/Monthly_trend.jsx';
+import HeatMap from './Components/Consistency/Heatmap.jsx';
+import './Dashboard.css';
 
 /**
  * Dashboard
@@ -77,7 +81,21 @@ export default function Dashboard() {
       <RecentActivity recentActivity={data.dashboardData.recentActivity} />
 
       {/* Reserved for later: Analytics, Heatmap, Recommendations */}
-      <section className="dashboard__placeholder" aria-hidden="true" />
+      <h2>Distributions</h2>
+      <section className="DistributionD">
+        < Difficulty data={data.dashboardData.overview} />
+        < Rating data={data.dashboardData.overview.ratingCounts}/>
+      </section>
+      <h2>Tags</h2>
+      <section className="DistributionT">
+        < Topic data={data.dashboardData.TopicWiseSolved}/>
+      </section>
+      <section className ="Months_Analytics">
+        <MonthAnaly data1 = {data.dashboardData.SolvedAtMonths}/>
+      </section>
+      <section className="HeatMap">
+        <HeatMap data={data.dashboardData.DailyCounts}/>
+      </section>
     </div>
   );
 }

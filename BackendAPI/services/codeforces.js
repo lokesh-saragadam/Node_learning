@@ -9,7 +9,7 @@ async function getUsers_1(handle){
     try {
     const res = await axios.get(
         `https://codeforces.com/api/user.status?handle=${handle}`,{
-            timeout:5000 //5 secs timeout,
+            timeout:10000 //5 secs timeout,
         }
     );
     log("codeforces.js","getUsers_1","Request resolved");

@@ -1,5 +1,5 @@
-import ProfileHeader from "../components/ProfileHeader.jsx";
-import ProfileSetup from "../components/ProfileSetup.jsx";
+import ProfileHeader from "./Components/ProfileHeader.jsx";
+import ProfileSetup from "./Components/ProfileSetup.jsx";
 
 export default function ProfilePage(){
 

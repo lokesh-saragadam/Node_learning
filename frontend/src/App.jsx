@@ -2,15 +2,11 @@ import { Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from 'react-error-boundary';
 
 // App.jsx
-import Header from "./components/Header.jsx";
-import Hero from "./components/Hero.jsx";
-import Stats from "./components/Stats.jsx";
-import Features from "./components/Features.jsx";
-import Login from "./components/Login.jsx"
-import DashBoard from "./pages/DashBoard.jsx";
-import Register from "./components/Register";
-import ProfilePage from "./pages/ProfilePage.jsx";
-import "./css/HomePage.css";
+import Home from "./pages/Home/Home.jsx";
+import Login from "./pages/Login/Login.jsx"
+import DashBoard from "./pages/DashBoard/DashBoard.jsx";
+import Register from "./pages/Register/Register.jsx";
+import ProfilePage from "./pages/Profile/ProfilePage.jsx";
 
 function ErrorFallback({ error }) {
   return (
@@ -27,14 +23,7 @@ export default function App() {
       <Routes>
         <Route path="/" 
         element = {
-          <div className="home-page">
-            <Header />
-            <main>
-              <Hero />
-              <Stats />
-              <Features />
-            </main>
-          </div>
+          <Home/>
         }
         />
         <Route path="/login" 

@@ -27,6 +27,7 @@ export default function OverviewCards({ overview }) {
     easy,
     medium,
     hard,
+    ratingCounts,
     currentStreak,
     longestStreak,
     platformsConnected,

@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const log = require("./utils/logger");
 const {reset_Database} = require('./init/createTables')
 const {router} = require('./Routes/router');
-
+const { pool,prisma } = require('./database/db')
 const { platform } = require('os');
 const app = express()
 
@@ -54,6 +54,20 @@ app.use((err, req, res, next) => {
 //Database Handling.
 async function datastart(){
     // await reset_Database(); //empty the database.
+    // await prisma.User.delete({
+    //     where:{
+    //         userid:3,
+    //     },
+    // });
+    // const alldata = await prisma.UserHandle.findMany({
+    //     select:{
+    //         handleid:true,
+    //         userid:true,
+    //         handle:true,
+    //     }
+    // });
+    // console.log(alldata);
+
     // await createTables();   //create all the tables if they dont exist.
 }
 // altertables();

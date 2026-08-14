@@ -78,7 +78,42 @@ async function getSolvedCountsByDifficulty(userId) {
   }
   return counts;
 }
+
+/*similiar to get solved by diff but with rating instead*/
+
+async function getSolvedCountsByRating(userId) {
+  const grouped = await prisma.solvedProblem.groupBy({
+    by: ['problemid'],
+    where: { userid: userId },
+  });
+  //all problems in solvedProblem table.
+  
+  // groupBy on problemid alone doesn't give us difficulty directly since
+  // difficulty is on the related Problem model. Prisma can't groupBy across
+  // a relation, so we fetch solved problemids + join difficulty instead.
+  const solved = await prisma.solvedProblem.findMany({
+    where: { userid: userId },
+    select: {
+      problem: {
+        select: { rating: true },
+      },
+    },
+  });
  
+  const counts = {}; // Start with an empty dictionary
+
+  for (const { problem } of solved) {
+    const rating = problem?.rating;
+    
+    // Ensure the problem actually has a numeric rating
+    if (typeof rating === 'number' && rating >= 800) {
+      // If the rating exists in 'counts', add 1. If not, treat it as 0 and add 1.
+      counts[Number(rating)] = (counts[rating] || 0) + 1;
+    }
+  }
+  return counts;
+}
+
 /**
  * Fetch every distinct calendar date (YYYY-MM-DD, in local/server time)
  * on which the user solved at least one problem, sorted descending
@@ -100,6 +135,82 @@ async function getDistinctSolvedDates(userId) {
   }
  
   return Array.from(dateSet).sort((a, b) => (a < b ? 1 : -1)); // desc
+}
+
+async function getSolvedCountByTopic(userId){
+  const problemids = await prisma.solvedProblem.findMany({
+    where:{userid:userId},
+    select:{
+      problemid:true,
+    }
+  })
+
+  const taggedData = await prisma.problem.groupBy({
+    by:['tags'],
+    where:{
+      problemid:{in:problemids.map(p=>p.problemid)},
+    }
+  });
+
+  const tagCounts = {};
+
+  for (const item of taggedData) {
+    for (const tag of item.tags) {
+      if (tagCounts[tag]) {
+        tagCounts[tag] += 1; // Increment if it exists
+      } else {
+        tagCounts[tag] = 1;  // Initialize at 1 if it doesn't
+      }
+    }
+  }
+
+
+  // Method 2: Using .reduce() (More concise)
+  const tagCountsReduce = taggedData.reduce((acc, currentItem) => {
+    currentItem.tags.forEach(tag => {
+      acc[tag] = (acc[tag] || 0) + 1;
+    });
+    return acc;
+  }, {});
+
+  return tagCountsReduce;
+
+}
+async function getSolvedByMonths(userId){
+  const rows = await prisma.solvedProblem.findMany({
+    where:{
+      userid:userId,
+      solvedat:{not:null},
+    },
+    select:{solvedat:true},
+    orderBy: { solvedat: 'desc' },
+  });
+  // Group the results by Month and Year
+  const problemsByMonth = rows.reduce((acc, row) => {
+    // Prisma guarantees this is a Date object (or null, but you filtered that out)
+    const date = row.solvedat; 
+    
+    // Format the date to a readable string like "August 2026"
+    const monthYear = date.toLocaleString('default', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+
+    // Initialize the count if this month hasn't been seen yet
+    if (!acc[monthYear]) {
+      acc[monthYear] = 0; 
+      // Note: If you want to store the actual rows instead of counting, 
+      // change this to: acc[monthYear] = []
+    }
+
+    // Increment the count
+    acc[monthYear]++;
+    // If storing rows, use: acc[monthYear].push(row)
+
+    return acc;
+  },{});
+  // Output example: { "August 2026": 12, "July 2026": 5, "June 2026": 21 }
+  return problemsByMonth;
 }
  
 /**
@@ -134,7 +245,45 @@ async function getLastSolvedTimestamp(userId) {
   });
   return latest?.solvedat ?? null;
 }
- 
+
+async function getDailycounts(userId){
+  const rows = await prisma.solvedProblem.findMany({
+    where:{
+      userid:userId,solvedat: { not: null }
+    },
+    orderBy:{
+      solvedat:'desc',
+    },
+    select:{
+      solvedat:true,
+    }
+  });
+  const heatmapData = rows.reduce((accumulator, record) => {
+  // 1. Extract just the date string (YYYY-MM-DD) from the ISO timestamp
+  const dateStr = record.solvedat.toISOString().split('T')[0];
+
+  // 2. If this date isn't in our object yet, initialize it to 0
+  if (!accumulator[dateStr]) {
+    accumulator[dateStr] = 0;
+  }
+
+  // 3. Increment the count for this date
+  accumulator[dateStr]++;
+
+  // 4. Return the object for the next loop iteration
+  return accumulator;
+}, {}); // The {} means we start with an empty object
+
+/* Output:
+{
+  "2023-10-01": 3,
+  "2023-10-05": 1,
+  "2023-10-12": 2
+}
+*/
+  return heatmapData;
+}
+
 /**
  * Most recent N solved problems with problem + platform info attached.
  */
@@ -391,20 +540,21 @@ function formatRelativeTime(date) {
  * totals, difficulty breakdown, streaks, platforms, last sync.
  */
 async function getDashboardOverview(userId) {
-  const [totalSolved, difficultyCounts, solvedDates, platformsConnected, lastSolvedAt] =
+  const [totalSolved, difficultyCounts,ratingCounts, solvedDates, platformsConnected, lastSolvedAt] =
     await Promise.all([
       getTotalSolvedCount(userId),
       getSolvedCountsByDifficulty(userId),
+      getSolvedCountsByRating(userId),
       getDistinctSolvedDates(userId),
       getConnectedPlatformsCount(userId),
       getLastSolvedTimestamp(userId),
     ]);
-
   return {
     totalSolved,
     easy: difficultyCounts.Easy,
     medium: difficultyCounts.Medium,
     hard: difficultyCounts.Hard,
+    ratingCounts: ratingCounts,
     currentStreak: calculateCurrentStreak(solvedDates),
     longestStreak: calculateLongestStreak(solvedDates),
     platformsConnected,
@@ -428,8 +578,10 @@ async function getDashboardData(userId, { recentActivityLimit = 10 } = {}) {
     ...item,
     solvedAtRelative: formatRelativeTime(item.solvedAt),
   }));
- 
-  return { overview, recentActivity };
+  const SolvedAtMonths = await getSolvedByMonths(userId);
+  const TopicWiseSolved = await getSolvedCountByTopic(userId);
+  const DailyCounts = await getDailycounts(userId);
+  return { overview, recentActivity ,SolvedAtMonths,TopicWiseSolved,DailyCounts};
 }
  
 /* ============================================================
@@ -440,7 +592,10 @@ module.exports = {
   // Repository layer (pure data access)
   getTotalSolvedCount,
   getSolvedCountsByDifficulty,
+  getSolvedCountsByRating,
   getDistinctSolvedDates,
+  getSolvedByMonths,
+  getDailycounts,
   getConnectedPlatformsCount,
   getConnectedPlatformNames,
   getLastSolvedTimestamp,
@@ -451,7 +606,7 @@ module.exports = {
   addUserHandle,
   updateUserHandleRating,
   removeUserHandle,
- 
+  
   // Service layer (business logic / composition)
   calculateCurrentStreak,
   calculateLongestStreak,

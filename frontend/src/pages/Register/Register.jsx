@@ -1,6 +1,6 @@
 import { Link , useNavigate } from "react-router-dom";
-import AuthHeader from "./AuthHeader.jsx";
-import {log} from "../utils/logger.js";
+import AuthHeader from "../../components/Headers/AuthHeader.jsx";
+import {log} from "../../utils/logger.js";
 
 export default function Register() {
   const navigate = useNavigate();

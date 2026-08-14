@@ -13,6 +13,58 @@
   margin: 0 0 16px;
   color: #ffffff;
 }
+/* _____Distribution _________*/
+
+.DistributionD {
+  display: flex; 
+  justify-content: center; /* Centers them horizontally */
+  align-items: center;     /* Aligns them vertically */
+  flex-direction: row; /* Forces them to sit horizontally side-by-side */
+  flex-wrap: nowrap;   /* Prevents them from stacking on smaller screens */   
+  gap: 40px;               /* Adds space between the two charts */
+  margin-top: 20px;
+}
+/*____________Topic__________________*/
+.tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 4px 10px;
+  border-radius: 9999px; /* Pill shape */
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.tag-name {
+  color: #374151;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.tag-count {
+  background-color: #e5e7eb;
+  color: #4b5563;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+}
 
 /* *_____________________ Welcome ______________ */
 
